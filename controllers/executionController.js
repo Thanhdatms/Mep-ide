@@ -3,7 +3,12 @@ const fs = require('fs');
 
 // Execute Python code
 const executePython = (code, res) => {
-    
+    exec(`python -c "${code}"`, (error, stdout, stderr) => {
+        if (error) {
+            return res.status(400).json({ error: stderr });
+        }
+        res.json({ output: stdout });
+    });
 };
 
 // Execute JavaScript code
