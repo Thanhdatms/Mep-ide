@@ -26,7 +26,17 @@ const executeJavascript = (code, res) => {
 
 // Execute C++ code
 const executeCpp = (code, res) => {
-
+    const tempFile = 'temp.cpp';
+    const outputFile = 'temp'; 
+    fs.writeFileSync(tempFile, code);
+    exec(`g++ ${tempFile} -o ${outputFile} && ./${outputFile}`, (error, stdout, stderr) => {
+        fs.unlinkSync(tempFile); 
+        fs.unlinkSync(outputFile); 
+        if (error) {
+            return res.status(400).json({ error: stderr });
+        }
+        res.json({ output: stdout });
+    });
 };
 
 // Controller function to handle execution based on language
