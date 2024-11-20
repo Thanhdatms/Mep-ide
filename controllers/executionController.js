@@ -13,7 +13,15 @@ const executePython = (code, res) => {
 
 // Execute JavaScript code
 const executeJavascript = (code, res) => {
-
+    const tempFile = 'temp.js';
+    fs.writeFileSync(tempFile, code);
+    exec(`node ${tempFile}`, (error, stdout, stderr) => {
+        fs.unlinkSync(tempFile);
+        if (error) {
+            return res.status(400).json({ error: stderr });
+        }
+        res.json({ output: stdout });
+    });
 };
 
 // Execute C++ code
